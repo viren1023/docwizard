@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//ignore_for_file:prefer_const_constructors
-
 class UserInfo extends StatefulWidget {
   const UserInfo({super.key});
 
@@ -12,12 +10,6 @@ class UserInfo extends StatefulWidget {
 }
 
 class _UserInfo extends State<UserInfo> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _loadData('signInCred');
-  // }
-
   Future<List<String>> _loadData(key) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(key) ?? [];

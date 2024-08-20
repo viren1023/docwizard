@@ -1,9 +1,12 @@
+import 'dart:convert';
+import 'package:doc_wizard/utils/saveToken.dart';
+import 'package:doc_wizard/utils/snackBar.dart';
+import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:doc_wizard/main.dart';
 import 'package:doc_wizard/pages/Login_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -14,7 +17,6 @@ class Register extends StatefulWidget {
 
 class _Register extends State<Register> {
   bool _obscureText = true;
-  late List<String> emailList;
   final signUpFormKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -23,7 +25,7 @@ class _Register extends State<Register> {
   @override
   void initState() {
     super.initState();
-    _initData();
+    // _initData();
   }
 
   @override
@@ -38,63 +40,31 @@ class _Register extends State<Register> {
     if (signUpFormKey.currentState!.validate()) {
       signUpFormKey.currentState!.save();
 
-      List<String> value = [
-        _nameController.text,
-        _emailController.text,
-        _passwordController.text
-      ];
+      String url = "http://localhost/mind_breaker/index.php/signup";
 
-      print(value);
+      // try {
 
-      bool success = await _saveData(value);
+      print('before passed res');
 
-      print(success);
+      var res = await http.post(Uri.parse(url), body: {
+        '_name': _nameController.text,
+        '_email': _emailController.text,
+        '_password': _passwordController.text,
+      });
+      print('after passed res');
+      print(res.statusCode);
+      print(res.body);
+      var jRes = await jsonDecode(res.body);
 
-      if (success) {
+      if (res.statusCode == 200) {
+        saveToken(_emailController.text);
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainPage()),
-        );
+            context, MaterialPageRoute(builder: (context) => MainPage()));
+      } else {
+        print('else');
+        showCustomSnackBar(context, jRes['message']);
       }
     }
-  }
-
-  Future<bool> _saveData(List<String> value) async {
-    print(value);
-    print('value = ${value[1]}, emailList = ${emailList}');
-
-    if (emailList.contains(value[1])) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email already exists.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return false; // Indicate failure
-    }
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('userCred${emailList.length + 1}', value);
-    await prefs.setStringList('signInCred', value);
-    return true;
-  }
-
-  Future<void> _initData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> allKeys = prefs.getKeys();
-    List<String> lst = [];
-    print(allKeys);
-
-    for (String key in allKeys) {
-      var item = prefs.getStringList(key);
-      print('key ${item?[1]}');
-      lst.add(item![1]);
-    }
-    print('lst ${lst}');
-    setState(() {
-      emailList = lst;
-    });
-    print('All email ${emailList}');
   }
 
   @override

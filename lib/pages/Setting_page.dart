@@ -19,7 +19,7 @@ class _Setting extends State<Setting> {
 
   void _logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('signInCred');
+    await prefs.remove('token');
 
     setState(() {
       Navigator.pushReplacement(

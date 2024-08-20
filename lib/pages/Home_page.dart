@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
+import '../utils/choseFile.dart';
+// import 'package:file_picker/file_picker.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,7 +15,7 @@ class _Home extends State<Home> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(children: [
-          SizedBox(
+          const SizedBox(
             height: 100,
           ),
           Center(
@@ -29,7 +30,7 @@ class _Home extends State<Home> {
                     fit: BoxFit.fill,
                   ),
                   RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                           style: TextStyle(
                               fontSize: 24,
                               letterSpacing: 2,
@@ -48,42 +49,69 @@ class _Home extends State<Home> {
                                 color: Color.fromARGB(255, 155, 98, 101),
                                 fontWeight: FontWeight.bold))
                       ])),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      FilePickerResult? result =
-                          await FilePicker.platform.pickFiles();
-
-                      if (result != null) {
-                        // File file = File(result.files.single.path!);
-                      } else {
-                        // User canceled the picker
-                      }
-                    },
-                    label: IntrinsicWidth(
+                  IntrinsicWidth(
+                    child: Container(
+                      padding: EdgeInsets.all(0),
+                      decoration: const BoxDecoration(
+                          color: Color.fromARGB(
+                              255, 212, 131, 105), // Background color
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: Row(
                         children: [
-                          Icon(Icons.upload),
-                          SizedBox(
-                            width: 5,
+                          TextButton(
+                            onPressed: () => pickTextFile(context),
+                            style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(16),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 212, 131, 105)),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.upload),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Select File',
+                                  style: TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
                           ),
-                          Text(
-                            'Select File',
-                            style: TextStyle(fontSize: 16),
-                          )
+                          PopupMenuButton<String>(
+                            onSelected: (String result) {
+                              // change of page or just content logic
+                            },
+                            itemBuilder: (BuildContext context) =>
+                                <PopupMenuEntry<String>>[
+                              const PopupMenuItem<String>(
+                                value: '0',
+                                child: Text('TXT to PDF'),
+                              ),
+                              const PopupMenuItem<String>(
+                                value: '1',
+                                child: Text('Image to PDF'),
+                              ),
+                              const PopupMenuItem<String>(
+                                value: '2',
+                                child: Text('Code to PDF'),
+                              ),
+                            ],
+                            child: const IconButton(
+                                onPressed: null,
+                                icon: const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.white,
+                                )),
+                          ),
                         ],
                       ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(16),
-                        // side: BorderSide(width: 1),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        foregroundColor: Colors.white,
-                        backgroundColor: Color.fromARGB(255, 212, 131, 105)),
-                    // backgroundColor: Colors.blueGrey[700]),
                   ),
                   // Spacer(flex: 7),
                 ],

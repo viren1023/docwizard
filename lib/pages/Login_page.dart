@@ -1,9 +1,12 @@
 import 'dart:ui';
+import 'dart:convert';
+import 'package:doc_wizard/utils/saveToken.dart';
+import 'package:doc_wizard/utils/snackBar.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:doc_wizard/main.dart';
 import 'package:doc_wizard/pages/Register_page.dart';
+import 'package:http/http.dart' as http;
 
 // import 'package:doc_wizard/main.dart';
 // import 'package:doc_wizard/pages/Register_page.dart';
@@ -17,7 +20,6 @@ class Login extends StatefulWidget {
 
 class _Login extends State<Login> {
   bool _obscureText = true;
-  late List<String> emailList;
   final signInFormKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -40,103 +42,28 @@ class _Login extends State<Login> {
     if (signInFormKey.currentState!.validate()) {
       signInFormKey.currentState!.save();
 
-      List<String> value = [_emailController.text, _passwordController.text];
+      String url = "http://localhost/mind_breaker/index.php/signin";
 
-      bool success = await _checkData(value);
+      print('before passed res');
 
-      if (success) {
+      var res = await http.post(Uri.parse(url), body: {
+        "_email": _emailController.text,
+        "_password": _passwordController.text,
+      });
+      print('after passed res');
+      var jsonResponse = await jsonDecode(res.body);
+
+      print(res.statusCode);
+      print(res.body);
+
+      if (res.statusCode == 200) {
+        saveToken(_emailController.text);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MainPage()));
+      } else {
+        showCustomSnackBar(context, jsonResponse['message']);
       }
     }
-  }
-
-  Future<bool> _checkData(List<String> value) async {
-    print(value);
-    // print('value = ${value[0]}, emailList = ${emailList}');
-
-    // if (!emailList.contains(value[0])) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Invalid email or password.'),
-    //       backgroundColor: Colors.red,
-    //     ),
-    //   );
-    //   return false; // Indicate failure
-    // }
-
-    String? key = await _getKeyByEmail(value[0]);
-    late List<String>? item;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if (key != null) {
-      item = prefs.getStringList(key);
-      if (item?[2] != value[1]) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Invalid email or password.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return false;
-      }
-      // Use the key for further operations
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid email or password.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return false;
-      // Handle the case where the email is not found
-    }
-
-    print('Saving key: ${item}');
-    await prefs.setStringList('signInCred', item!);
-    return true;
-  }
-
-  Future<String?> _getKeyByEmail(String email) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> keys = prefs.getKeys();
-
-    for (String key in keys) {
-      // Retrieve the list of strings for the current key
-      List<String>? item = prefs.getStringList(key);
-
-      // Check if the list is not null and contains the email
-      if (item != null && item.contains(email)) {
-        // Assuming email is at index 1, adjust if necessary
-        if (item[1] == email) {
-          print('Found email $email in key $key');
-          return key; // Return the key if the email matches
-        }
-      }
-    }
-
-    return null; // Return null if the email was not found
-  }
-
-  Future<void> _initData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> allKeys = prefs.getKeys();
-    List<String> lst = [];
-
-    print(allKeys);
-
-    for (String key in allKeys) {
-      var item = prefs.getStringList(key);
-      print('key ${item?[1]}');
-      lst.add(item![1]);
-    }
-    print('lst ${lst}');
-    setState(() {
-      emailList = lst;
-    });
-    print('All email ${emailList}');
-    await prefs.clear();
   }
 
   @override

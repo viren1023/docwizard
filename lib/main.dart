@@ -1,5 +1,8 @@
 // import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'providers/globalStateProvider.dart';
 
 import 'package:doc_wizard/pages/Setting_page.dart';
 import 'package:doc_wizard/splashScreen.dart';
@@ -7,16 +10,21 @@ import 'package:doc_wizard/pages/Home_page.dart';
 import 'package:doc_wizard/pages/Files_page.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: const Splashscreen(),
-    theme: ThemeData(
-      appBarTheme: AppBarTheme(
-          // color: Colors.red,
-          foregroundColor: Color.fromARGB(255, 203, 171, 146),
-          backgroundColor: Color.fromARGB(255, 3, 46, 64),
-          titleSpacing: 5 // App bar color
-          ),
+  runApp(ChangeNotifierProvider(
+    create: (context) => GlobalStateProvider(),
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const Splashscreen(),
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+            // color: Colors.red,
+            foregroundColor: Color.fromARGB(255, 203, 171, 146),
+            backgroundColor: Color.fromARGB(255, 3, 46, 64),
+            titleSpacing: 5 // App bar color
+            ),
+        popupMenuTheme:
+            PopupMenuThemeData(color: Color.fromARGB(255, 214, 200, 188)),
+      ),
     ),
   ));
 }

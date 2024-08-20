@@ -23,7 +23,7 @@ class _Splashscreen extends State<Splashscreen>
 
   Future<void> _initData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? isSignIn = prefs.getStringList('signInCred');
+    String? isSignIn = prefs.getString('token');
 
     print(isSignIn);
 
