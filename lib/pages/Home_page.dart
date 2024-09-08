@@ -1,3 +1,6 @@
+import 'package:doc_wizard/pages/previewFile.dart';
+import 'package:doc_wizard/providers/globalStateProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../utils/choseFile.dart';
 // import 'package:file_picker/file_picker.dart';
@@ -54,7 +57,7 @@ class _Home extends State<Home> {
                   ),
                   IntrinsicWidth(
                     child: Container(
-                      padding: EdgeInsets.all(0),
+                      padding: const EdgeInsets.all(0),
                       decoration: const BoxDecoration(
                           color: Color.fromARGB(
                               255, 212, 131, 105), // Background color
@@ -62,7 +65,16 @@ class _Home extends State<Home> {
                       child: Row(
                         children: [
                           TextButton(
-                            onPressed: () => pickTextFile(context),
+                            onPressed: () async {
+                              bool result = await pickTextFile(context);
+                              if (result) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PreviewPage()));
+                              }
+                            },
                             style: TextButton.styleFrom(
                                 padding: const EdgeInsets.all(16),
                                 shape: RoundedRectangleBorder(
@@ -104,7 +116,7 @@ class _Home extends State<Home> {
                             ],
                             child: const IconButton(
                                 onPressed: null,
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.arrow_drop_down,
                                   color: Colors.white,
                                 )),
@@ -114,6 +126,8 @@ class _Home extends State<Home> {
                     ),
                   ),
                   // Spacer(flex: 7),
+                  // Text(
+                  // '${context.watch<GlobalStateProvider>().fileName ?? "Null"}')
                 ],
               ),
             ),

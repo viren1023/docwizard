@@ -29,7 +29,7 @@ class _About extends State<About> {
                 child: RichText(
                   text: TextSpan(
                     style: TextStyle(color: Colors.black, fontSize: 16),
-                    children: [
+                    children: const [
                       TextSpan(
                         text: 'Welcome to DocWizard\n\n',
                         style: TextStyle(

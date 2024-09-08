@@ -40,7 +40,7 @@ class _Register extends State<Register> {
     if (signUpFormKey.currentState!.validate()) {
       signUpFormKey.currentState!.save();
 
-      String url = "http://localhost/mind_breaker/index.php/signup";
+      String url = "http://192.168.0.113/doc_wizard/index.php/signup";
 
       // try {
 
@@ -57,9 +57,9 @@ class _Register extends State<Register> {
       var jRes = await jsonDecode(res.body);
 
       if (res.statusCode == 200) {
-        saveToken(_emailController.text);
+        saveToken(jRes['token']);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainPage()));
+            context, MaterialPageRoute(builder: (context) => const MainPage()));
       } else {
         print('else');
         showCustomSnackBar(context, jRes['message']);
@@ -122,6 +122,11 @@ class _Register extends State<Register> {
                                 Expanded(
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        foregroundColor: const Color.fromARGB(
+                                            255, 133, 129, 126),
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 191, 187, 181),
                                         shape: const RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.horizontal(
@@ -141,6 +146,12 @@ class _Register extends State<Register> {
                                 Expanded(
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
+                                      disabledBackgroundColor:
+                                          const Color.fromARGB(
+                                              255, 247, 242, 250),
+                                      disabledForegroundColor:
+                                          const Color.fromARGB(
+                                              255, 103, 80, 164),
                                       shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.horizontal(
                                               right: Radius.circular(10))),

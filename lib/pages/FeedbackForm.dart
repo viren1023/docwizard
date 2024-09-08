@@ -29,21 +29,23 @@ class _FeedBackState extends State<FeedBack> {
         AlertDialog alert = AlertDialog(
           // backgroundColor: Color.fromARGB(255, 203, 171, 146),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          title: Text('Thanks for rating us!'),
+          title: const Text('Thanks for rating us!'),
           // content: Text('Thanks for rating us!'),
           actions: [
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 3, 106, 115),
+                    backgroundColor: const Color.fromARGB(255, 3, 106, 115),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8))),
                 onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => MainPage()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MainPage()));
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ),
           ],
@@ -57,7 +59,7 @@ class _FeedBackState extends State<FeedBack> {
       } else {
         // Handle case where rating is not provided
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please provide a rating.')),
+          const SnackBar(content: Text('Please provide a rating.')),
         );
       }
     }
@@ -67,7 +69,7 @@ class _FeedBackState extends State<FeedBack> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FeedBack'),
+        title: const Text('FeedBack'),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -76,20 +78,20 @@ class _FeedBackState extends State<FeedBack> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Text(
+                const Text(
                   'FeedBack From',
                   style: TextStyle(fontSize: 24),
                 ),
-                SizedBox(height: 50),
-                Text('Rate Our App', style: TextStyle(fontSize: 18)),
+                const SizedBox(height: 50),
+                const Text('Rate Our App', style: TextStyle(fontSize: 18)),
                 RatingBar.builder(
                   initialRating: 3,
                   minRating: 1,
                   direction: Axis.horizontal,
                   allowHalfRating: true,
                   itemCount: 5,
-                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                  itemBuilder: (context, _) => Icon(
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => const Icon(
                     Icons.star,
                     color: Colors.amber,
                   ),
@@ -99,7 +101,7 @@ class _FeedBackState extends State<FeedBack> {
                     });
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _nameController,
                   autocorrect: true,
@@ -114,7 +116,7 @@ class _FeedBackState extends State<FeedBack> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
                   autocorrect: true,
@@ -133,7 +135,7 @@ class _FeedBackState extends State<FeedBack> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _feedbackController,
                   autocorrect: true,
@@ -151,15 +153,15 @@ class _FeedBackState extends State<FeedBack> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Text('Submit'),
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 3, 106, 115),
+                      backgroundColor: const Color.fromARGB(255, 3, 106, 115),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8))),
+                  child: Text('Submit'),
                 )
               ],
             ),

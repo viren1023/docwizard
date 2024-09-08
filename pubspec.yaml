@@ -41,9 +41,10 @@ dependencies:
   flutter_rating_bar: ^4.0.0
 
   file_picker: ^5.2.5
-  pdf: ^3.11.0
-  path_provider: ^2.0.14
-  open_filex: ^4.3.0
+  pdf:
+  path_provider: 
+  open_file:
+  permission_handler:
 
   provider: ^6.1.2
   http: ^1.2.2

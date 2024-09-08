@@ -1,4 +1,5 @@
 // import 'dart:io';
+//  distributionUrl=https\://services.gradle.org/distributions/gradle-7.6.3-all.zip
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,20 +11,22 @@ import 'package:doc_wizard/pages/Home_page.dart';
 import 'package:doc_wizard/pages/Files_page.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => GlobalStateProvider(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => GlobalStateProvider()),
+    ],
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const Splashscreen(),
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
             // color: Colors.red,
             foregroundColor: Color.fromARGB(255, 203, 171, 146),
             backgroundColor: Color.fromARGB(255, 3, 46, 64),
             titleSpacing: 5 // App bar color
             ),
         popupMenuTheme:
-            PopupMenuThemeData(color: Color.fromARGB(255, 214, 200, 188)),
+            const PopupMenuThemeData(color: Color.fromARGB(255, 214, 200, 188)),
       ),
     ),
   ));
@@ -43,7 +46,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 3, 46, 64),
+        backgroundColor: const Color.fromARGB(255, 3, 46, 64),
         title: const Text(
           'DocWizard',
           style: TextStyle(
@@ -60,9 +63,9 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         // elevation: 100,
         // backgroundColor: Color.fromARGB(255, 196, 181, 169),
-        backgroundColor: Color.fromARGB(255, 3, 46, 64),
-        unselectedItemColor: Color.fromARGB(255, 146, 141, 133),
-        selectedItemColor: Color.fromARGB(255, 203, 171, 146),
+        backgroundColor: const Color.fromARGB(255, 3, 46, 64),
+        unselectedItemColor: const Color.fromARGB(255, 146, 141, 133),
+        selectedItemColor: const Color.fromARGB(255, 203, 171, 146),
         currentIndex: Index,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -42,7 +42,7 @@ class _Login extends State<Login> {
     if (signInFormKey.currentState!.validate()) {
       signInFormKey.currentState!.save();
 
-      String url = "http://localhost/mind_breaker/index.php/signin";
+      String url = "http://192.168.0.113/doc_wizard/index.php/signin";
 
       print('before passed res');
 
@@ -57,9 +57,9 @@ class _Login extends State<Login> {
       print(res.body);
 
       if (res.statusCode == 200) {
-        saveToken(_emailController.text);
+        saveToken(jsonResponse['token']);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainPage()));
+            context, MaterialPageRoute(builder: (context) => const MainPage()));
       } else {
         showCustomSnackBar(context, jsonResponse['message']);
       }
@@ -128,10 +128,15 @@ class _Login extends State<Login> {
                                     onPressed: null,
                                     // color: Colors.deepPurple[300],
                                     style: ElevatedButton.styleFrom(
+                                      disabledBackgroundColor:
+                                          const Color.fromARGB(
+                                              255, 247, 242, 250),
+                                      disabledForegroundColor:
+                                          const Color.fromARGB(
+                                              255, 103, 80, 164),
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.horizontal(
-                                            left: Radius.circular(
-                                                10)), // Set the desired border radius here
+                                            left: Radius.circular(10)),
                                       ),
                                     ),
                                     child: const Text('Sign In'),
@@ -142,6 +147,10 @@ class _Login extends State<Login> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       elevation: 0,
+                                      foregroundColor: const Color.fromARGB(
+                                          255, 133, 129, 126),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 191, 187, 181),
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.horizontal(
                                             right: Radius.circular(

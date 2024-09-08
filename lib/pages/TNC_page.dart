@@ -12,18 +12,18 @@ class _TNCState extends State<TNC> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Terms & Conditions'),
+        title: const Text('Terms & Conditions'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Introduction',
+            const Text('Introduction',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             RichText(
-              text: TextSpan(
+              text: const TextSpan(
                 style: TextStyle(color: Colors.black, fontSize: 16),
                 children: [
                   TextSpan(
@@ -69,11 +69,11 @@ class _TNCState extends State<TNC> {
                 ],
               ),
             ),
-            Text('Intellectual Property',
+            const Text('Intellectual Property',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             RichText(
-              text: TextSpan(
+              text: const TextSpan(
                 style: TextStyle(color: Colors.black, fontSize: 16),
                 children: [
                   TextSpan(
@@ -127,11 +127,11 @@ class _TNCState extends State<TNC> {
                 ],
               ),
             ),
-            Text('Privacy and Data Collection',
+            const Text('Privacy and Data Collection',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             RichText(
-              text: TextSpan(
+              text: const TextSpan(
                 style: TextStyle(color: Colors.black, fontSize: 16),
                 children: [
                   TextSpan(

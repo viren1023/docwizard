@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class GlobalStateProvider extends ChangeNotifier {
   late File filePath;
-  late String fileName;
+  String fileName = "";
 
   void setFilePath({required File newFilePath}) async {
     filePath = newFilePath;

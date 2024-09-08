@@ -42,7 +42,7 @@ class _Splashscreen extends State<Splashscreen>
         const Duration(seconds: 3),
         () {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const Login()));
+              context, MaterialPageRoute(builder: (_) => const MainPage()));
         },
       );
     }
@@ -67,7 +67,7 @@ class _Splashscreen extends State<Splashscreen>
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
         child: Scaffold(
-            backgroundColor: Color.fromARGB(121, 0, 0, 0),
+            backgroundColor: const Color.fromARGB(121, 0, 0, 0),
             body: Center(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -82,10 +82,10 @@ class _Splashscreen extends State<Splashscreen>
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
-                    Text(
+                    const Text(
                       'DocWizard',
                       style: TextStyle(
                           color: Colors.white,

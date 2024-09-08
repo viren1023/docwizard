@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 
 import '../providers/globalStateProvider.dart';
 
-Future<void> pickTextFile(BuildContext context) async {
+Future<bool> pickTextFile(BuildContext context) async {
   FilePickerResult? result = await FilePicker.platform.pickFiles(
     type: FileType.custom,
     allowedExtensions: ['txt'],
@@ -15,9 +15,10 @@ Future<void> pickTextFile(BuildContext context) async {
     File selectedFile = File(result.files.single.path!);
     String fileName = result.files.single.name;
 
-    Provider.of<GlobalStateProvider>(context, listen: false)
-        .setFilePath(newFilePath: selectedFile);
-    Provider.of<GlobalStateProvider>(context, listen: false)
-        .setFileName(newFileName: fileName);
+    context.read<GlobalStateProvider>().setFilePath(newFilePath: selectedFile);
+    context.read<GlobalStateProvider>().setFileName(newFileName: fileName);
+
+    return true;
   }
+  return false;
 }
