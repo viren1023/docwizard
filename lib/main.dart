@@ -1,5 +1,6 @@
 // import 'dart:io';
 //  distributionUrl=https\://services.gradle.org/distributions/gradle-7.6.3-all.zip
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,6 +43,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int Index = 1;
   var page = [const Files(), const Home(), const Setting()];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,26 +62,20 @@ class _MainPageState extends State<MainPage> {
       body: Container(
         child: page[Index],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        // elevation: 100,
-        // backgroundColor: Color.fromARGB(255, 196, 181, 169),
-        backgroundColor: const Color.fromARGB(255, 3, 46, 64),
-        unselectedItemColor: const Color.fromARGB(255, 146, 141, 133),
-        selectedItemColor: const Color.fromARGB(255, 203, 171, 146),
-        currentIndex: Index,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.file_copy),
-            label: 'Files',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
+      // floatingActionButton: FloatingActionButton(onPressed: null),
+      bottomNavigationBar: CurvedNavigationBar(
+        color: Color.fromARGB(255, 3, 46, 64),
+        backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+        height: 60,
+        index: Index,
+        animationDuration: Duration(milliseconds: 400),
+        // animationCurve: Curves.fastEaseInToSlowEaseOut,
+        // animationCurve: Curves.easeInExpo,
+        animationCurve: Curves.easeInOutQuint,
+        items: [
+          _buildNavItem(Icons.file_copy, 'Files', 0),
+          _buildNavItem(Icons.home, 'Home', 1),
+          _buildNavItem(Icons.settings, 'Settings', 2),
         ],
         onTap: (index) {
           setState(() {
@@ -87,6 +83,55 @@ class _MainPageState extends State<MainPage> {
           });
         },
       ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   backgroundColor: const Color.fromARGB(255, 3, 46, 64),
+      //   unselectedItemColor: const Color.fromARGB(255, 146, 141, 133),
+      //   selectedItemColor: const Color.fromARGB(255, 203, 171, 146),
+      //   currentIndex: Index,
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.file_copy),
+      //       label: 'Files',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.settings),
+      //       label: 'Settings',
+      //     ),
+      //   ],
+      //   onTap: (index) {
+      //     setState(() {
+      //       Index = index;
+      //     });
+      //   },
+      // ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    bool isSelected = index == Index;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: isSelected
+          ? [Icon(icon, size: 40, color: Color.fromARGB(255, 203, 171, 146))]
+          : [
+              Icon(
+                icon,
+                size: 25,
+                color: Color.fromARGB(255, 146, 141, 133),
+              ),
+              Text(
+                label,
+                style: TextStyle(
+                  color: Color.fromARGB(255, 146, 141, 133),
+                  fontSize: 12,
+                ),
+              ),
+            ],
     );
   }
 }

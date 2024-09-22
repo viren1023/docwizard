@@ -41,6 +41,7 @@ class _Register extends State<Register> {
       signUpFormKey.currentState!.save();
 
       String url = "http://192.168.0.113/doc_wizard/index.php/signup";
+      // String url = "http://192.168.0.122/doc_wizard/index.php/signup";
 
       // try {
 

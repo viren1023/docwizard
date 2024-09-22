@@ -28,7 +28,7 @@ class _Splashscreen extends State<Splashscreen>
     print(isSignIn);
 
     if (isSignIn != null) {
-      print('true');
+      // print('true');
       Future.delayed(
         const Duration(seconds: 3),
         () {
@@ -37,12 +37,12 @@ class _Splashscreen extends State<Splashscreen>
         },
       );
     } else {
-      print('false');
+      // print('false');
       Future.delayed(
         const Duration(seconds: 3),
         () {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const MainPage()));
+              context, MaterialPageRoute(builder: (_) => const Login()));
         },
       );
     }

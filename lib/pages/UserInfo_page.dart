@@ -13,6 +13,7 @@ class UserInfo extends StatefulWidget {
 
 class _UserInfo extends State<UserInfo> {
   String url = "http://192.168.0.113/doc_wizard/index.php/auth";
+  // String url = "http://192.168.0.122/doc_wizard/index.php/auth";
   // late List<String> data;
 
   Future _loadData() async {
