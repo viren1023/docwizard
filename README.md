@@ -1,6 +1,6 @@
 # doc_wizard
 
-A new Flutter project.
+Its a Flutter app than can create pdf for txt and images.
 
 ## Getting Started
 
