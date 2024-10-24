@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:doc_wizard/utils/nonConverted.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -12,11 +13,12 @@ class Files extends StatefulWidget {
 }
 
 class _Files extends State<Files> {
-  late int lengthOfData = 0;
+  late int lengthOfData;
   late var file_name;
   late var file_path;
   late var file_size;
   late var file_date;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -25,23 +27,33 @@ class _Files extends State<Files> {
   }
 
   void loadData() async {
+    print("helo");
     String url = "http://192.168.0.113/doc_wizard/index.php/file_history";
-    // String url = "http://192.168.0.122/doc_wizard/index.php/file_history";
+    // String url = "http://192.168.20.78/doc_wizard/index.php/file_history";
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
+    print(token);
     var res = await http.post(Uri.parse(url), body: {
       "token": token,
     });
 
     var result = await jsonDecode(res.body);
-    // print()
+    print(result);
+    print('file_name ${result['file_name']}');
     setState(() {
-      lengthOfData = result['file_name'].length;
-      file_name = result['file_name'];
-      file_path = result['file_path'];
-      file_date = result['time_date'];
-      file_size = result['file_size'];
+      if (result['file_name'] == null) {
+        lengthOfData = 0;
+      } else {
+        lengthOfData = result['file_name'].length;
+        file_name = result['file_name'];
+        file_path = result['file_path'];
+        file_date = result['time_date'];
+        file_size = result['file_size'];
+      }
+
+      isLoading = false;
     });
     print(lengthOfData);
     print(result);
@@ -70,13 +82,6 @@ class _Files extends State<Files> {
     }
   }
 
-  // String formatDate(String dateTimeString) {
-  //   final DateFormat inputFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
-  //   DateTime dateTime = inputFormat.parse(dateTimeString);
-  //   final DateFormat outputFormat = DateFormat('dd-MM-yy');
-  //   return outputFormat.format(dateTime);
-  // }
-
   String formatDate(String dateTimeString) {
     final DateFormat inputFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
     DateTime dateTime = inputFormat.parse(dateTimeString);
@@ -97,58 +102,52 @@ class _Files extends State<Files> {
     return [formattedDate, formattedTime];
   }
 
-  // void main() {
-  //   // Example usage
-  //   String dateTimeString = '2024-09-15 12:28:22.341';
-  //   String formattedDate = formatDate(dateTimeString);
-
-  //   print(formattedDate);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: lengthOfData == 0
+      body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: lengthOfData,
-              // reverse: true,
-              itemBuilder: (context, index) {
-                var current_File_name = file_name[index];
-                var current_File_path = file_path[index];
-                var current_File_size = formatFileSize(file_size[index]);
-                var current_File_date = formatDateTime(file_date[index]);
-                return ListTile(
-                    leading: Icon(Icons.insert_drive_file),
-                    title: Text(current_File_name),
-                    trailing: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(current_File_date[0],
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                        Text(current_File_date[1],
-                            style: TextStyle(fontSize: 10)),
-                      ],
-                    ),
-                    subtitle: Text(
-                      current_File_size,
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    // subtitle: Text(
-                    //     'Path: ${current_File_path}\nSize: ${current_File_size}\nDate: ${current_File_date}'),
-                    // isThreeLine: true,
-                    onTap: null
-                    //  {
-                    // Handle tile tap
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   SnackBar(content: Text('Clicked on ${file.name}')),
-                    // );
-                    // },
-                    );
-              },
-            ),
+          : lengthOfData == 0
+              ? NonConverted()
+              : ListView.builder(
+                  itemCount: lengthOfData,
+                  // reverse: true,
+                  itemBuilder: (context, index) {
+                    var current_File_name = file_name[index];
+                    var current_File_path = file_path[index];
+                    var current_File_size = formatFileSize(file_size[index]);
+                    var current_File_date = formatDateTime(file_date[index]);
+                    return ListTile(
+                        leading: Icon(Icons.insert_drive_file),
+                        title: Text(current_File_name),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(current_File_date[0],
+                                style: TextStyle(
+                                  fontSize: 12,
+                                )),
+                            Text(current_File_date[1],
+                                style: TextStyle(fontSize: 10)),
+                          ],
+                        ),
+                        subtitle: Text(
+                          current_File_size,
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        // subtitle: Text(
+                        //     'Path: ${current_File_path}\nSize: ${current_File_size}\nDate: ${current_File_date}'),
+                        // isThreeLine: true,
+                        onTap: null
+                        //  {
+                        // Handle tile tap
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(content: Text('Clicked on ${file.name}')),
+                        // );
+                        // },
+                        );
+                  },
+                ),
       //   body: Center(
       // child: Opacity(
       //   opacity: 0.3,

@@ -3,13 +3,9 @@ import 'dart:convert';
 import 'package:doc_wizard/utils/saveToken.dart';
 import 'package:doc_wizard/utils/snackBar.dart';
 import 'package:flutter/material.dart';
-
 import 'package:doc_wizard/main.dart';
 import 'package:doc_wizard/pages/Register_page.dart';
 import 'package:http/http.dart' as http;
-
-// import 'package:doc_wizard/main.dart';
-// import 'package:doc_wizard/pages/Register_page.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,10 +16,10 @@ class Login extends StatefulWidget {
 
 class _Login extends State<Login> {
   bool _obscureText = true;
+  bool _isLoading = false;
   final signInFormKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -42,29 +38,45 @@ class _Login extends State<Login> {
     if (signInFormKey.currentState!.validate()) {
       signInFormKey.currentState!.save();
 
-      String url = "http://192.168.0.113/doc_wizard/index.php/signin";
-      // String url = "http://192.168.0.122/doc_wizard/index.php/signin";
+      setState(() {
+        _isLoading = true;
+      });
 
+      String url = "http://192.168.0.113/doc_wizard/index.php/signin";
+      // String url = "http://192.168.20.78/doc_wizard/index.php/signin";
       print('before passed res');
 
-      var res = await http.post(Uri.parse(url), body: {
-        "_email": _emailController.text,
-        "_password": _passwordController.text,
-      });
-      print('after passed res');
-      var jsonResponse = await jsonDecode(res.body);
+      try {
+        var res = await http.post(Uri.parse(url), body: {
+          "_email": _emailController.text,
+          "_password": _passwordController.text,
+        });
+        print('after passed res');
+        var jsonResponse = await jsonDecode(res.body);
 
-      print(res.statusCode);
-      print(res.body);
+        print(res.statusCode);
+        print(res.body);
 
-      if (res.statusCode == 200) {
-        saveToken(jsonResponse['token']);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const MainPage()));
-      } else {
-        showCustomSnackBar(context, jsonResponse['message']);
+        if (res.statusCode == 200) {
+          saveToken(jsonResponse['token'], jsonResponse['isAdmin']);
+          setState(() {
+            _isLoading = false;
+          });
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const MainPage()));
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+          showCustomSnackBar(context, jsonResponse['message']);
+        }
+      } catch (e) {
+        print(e);
       }
     }
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   @override
@@ -228,9 +240,16 @@ class _Login extends State<Login> {
                             const SizedBox(height: 30),
                             SizedBox(
                               width: double.infinity,
-                              child: ElevatedButton(
-                                  onPressed: _submitForm,
-                                  child: const Text('Sign In')),
+                              child: _isLoading
+                                  ? ElevatedButton(
+                                      onPressed: null,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(),
+                                      ))
+                                  : ElevatedButton(
+                                      onPressed: _submitForm,
+                                      child: Text('Sign In')),
                             )
                           ],
                         ),

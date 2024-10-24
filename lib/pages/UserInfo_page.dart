@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +12,8 @@ class UserInfo extends StatefulWidget {
 
 class _UserInfo extends State<UserInfo> {
   String url = "http://192.168.0.113/doc_wizard/index.php/auth";
-  // String url = "http://192.168.0.122/doc_wizard/index.php/auth";
+  // String url = "http://192.168.20.78/doc_wizard/index.php/auth";
+
   // late List<String> data;
 
   Future _loadData() async {
@@ -38,64 +38,91 @@ class _UserInfo extends State<UserInfo> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Person Information',
+        appBar: AppBar(
+          title: const Text(
+            'Person Information',
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 25),
-            const CircleAvatar(
-              radius: 60,
-              child: Icon(Icons.person, size: 90),
-            ),
-            FutureBuilder(
-              future: _loadData(),
-              builder: (context, snapshot) {
-                if (snapshot.data != null) {
-                  final data = snapshot.data!;
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        // Divider(height: 1),
-                        Card(
-                          color: card_color,
-                          shadowColor: Colors.transparent,
-                          child: ListTile(
-                            title: Text('Name: ${data[0]}'),
-                          ),
-                        ),
-                        const Divider(height: 1),
-                        Card(
-                          color: card_color,
-                          shadowColor: Colors.transparent,
-                          child: ListTile(
-                            title: Text('Email: ${data[1]}'),
-                          ),
-                        ),
-                        // Divider(height: 1),
-                        // Card(
-                        //   color: card_color,
-                        //   shadowColor: Colors.transparent,
-                        //   child: ListTile(
-                        //     title: Text('Password: ${data[2]}'),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  );
-                }
+        body: SingleChildScrollView(
+          child: FutureBuilder(
+            future: _loadData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                final data = snapshot.data!;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    const SizedBox(height: 25),
+                    CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 80,
+                      child: Image.asset('assets/images/avatar.png'),
+                    ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Username
+                          Text(
+                            "Username:",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFDCDCDC),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                data[0],
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+
+                          Text(
+                            "Email:",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFDCDCDC),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: ListTile(
+                              // tileColor: Color(0xFFDCDCDC),
+                              title: Text(
+                                data[1],
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
+        ));
   }
 }

@@ -16,11 +16,13 @@ class Register extends StatefulWidget {
 }
 
 class _Register extends State<Register> {
+  bool _isLoading = false;
   bool _obscureText = true;
   final signUpFormKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  // late String ipAddress;
 
   @override
   void initState() {
@@ -37,16 +39,22 @@ class _Register extends State<Register> {
   }
 
   void _submitForm() async {
+    print('hello');
     if (signUpFormKey.currentState!.validate()) {
       signUpFormKey.currentState!.save();
+      print("hello 1");
+      setState(() {
+        _isLoading = true;
+      });
+      // String ipAddress = context.read<IPAddressProvider>().ipAddress;
 
-      String url = "http://192.168.0.113/doc_wizard/index.php/signup";
-      // String url = "http://192.168.0.122/doc_wizard/index.php/signup";
+      String url = "http://192.168.0.113/doc_wizard/i/ndex.php/signup";
+      // String url = "http://192.168.20.78/doc_wizard/index.php/signup";
 
       // try {
 
       print('before passed res');
-
+      print(url);
       var res = await http.post(Uri.parse(url), body: {
         '_name': _nameController.text,
         '_email': _emailController.text,
@@ -58,11 +66,17 @@ class _Register extends State<Register> {
       var jRes = await jsonDecode(res.body);
 
       if (res.statusCode == 200) {
-        saveToken(jRes['token']);
+        saveToken(jRes['token'], jRes['isAdmin']);
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const MainPage()));
       } else {
         print('else');
+        setState(() {
+          _isLoading = false;
+        });
         showCustomSnackBar(context, jRes['message']);
       }
     }
@@ -243,9 +257,16 @@ class _Register extends State<Register> {
                             const SizedBox(height: 30),
                             SizedBox(
                               width: double.infinity,
-                              child: ElevatedButton(
-                                  onPressed: _submitForm,
-                                  child: const Text('Sign Up')),
+                              child: _isLoading
+                                  ? ElevatedButton(
+                                      onPressed: null,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(),
+                                      ))
+                                  : ElevatedButton(
+                                      onPressed: _submitForm,
+                                      child: const Text('Sign Up')),
                             )
                           ],
                         ),

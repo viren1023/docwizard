@@ -63,44 +63,19 @@ class _MainPageState extends State<MainPage> {
         child: page[Index],
       ),
       // floatingActionButton: FloatingActionButton(onPressed: null),
-      bottomNavigationBar: CurvedNavigationBar(
-        color: Color.fromARGB(255, 3, 46, 64),
-        backgroundColor: const Color.fromARGB(0, 255, 255, 255),
-        height: 60,
-        index: Index,
-        animationDuration: Duration(milliseconds: 400),
-        // animationCurve: Curves.fastEaseInToSlowEaseOut,
-        // animationCurve: Curves.easeInExpo,
-        animationCurve: Curves.easeInOutQuint,
-        items: [
-          _buildNavItem(Icons.file_copy, 'Files', 0),
-          _buildNavItem(Icons.home, 'Home', 1),
-          _buildNavItem(Icons.settings, 'Settings', 2),
-        ],
-        onTap: (index) {
-          setState(() {
-            Index = index;
-          });
-        },
-      ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   backgroundColor: const Color.fromARGB(255, 3, 46, 64),
-      //   unselectedItemColor: const Color.fromARGB(255, 146, 141, 133),
-      //   selectedItemColor: const Color.fromARGB(255, 203, 171, 146),
-      //   currentIndex: Index,
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.file_copy),
-      //       label: 'Files',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.settings),
-      //       label: 'Settings',
-      //     ),
+      // bottomNavigationBar: CurvedNavigationBar(
+      //   color: Color.fromARGB(255, 3, 46, 64),
+      //   backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+      //   height: 60,
+      //   index: Index,
+      //   animationDuration: Duration(milliseconds: 400),
+      //   // animationCurve: Curves.fastEaseInToSlowEaseOut,
+      //   // animationCurve: Curves.easeInExpo,
+      //   animationCurve: Curves.easeInOutQuint,
+      //   items: [
+      //     _buildNavItem(Icons.file_copy, 'Files', 0),
+      //     _buildNavItem(Icons.home, 'Home', 1),
+      //     _buildNavItem(Icons.settings, 'Settings', 2),
       //   ],
       //   onTap: (index) {
       //     setState(() {
@@ -108,6 +83,31 @@ class _MainPageState extends State<MainPage> {
       //     });
       //   },
       // ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color.fromARGB(255, 3, 46, 64),
+        unselectedItemColor: const Color.fromARGB(255, 146, 141, 133),
+        selectedItemColor: const Color.fromARGB(255, 203, 171, 146),
+        currentIndex: Index,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.file_copy),
+            label: 'Files',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        onTap: (index) {
+          setState(() {
+            Index = index;
+          });
+        },
+      ),
     );
   }
 

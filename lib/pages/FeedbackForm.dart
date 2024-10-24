@@ -1,6 +1,11 @@
 import 'package:doc_wizard/main.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:doc_wizard/utils/snackBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedBack extends StatefulWidget {
   const FeedBack({super.key});
@@ -10,59 +15,110 @@ class FeedBack extends StatefulWidget {
 }
 
 class _FeedBackState extends State<FeedBack> {
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   double _rating = 3;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _feedbackController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _feedbackController = TextEditingController();
 
-  void _submitForm() {
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _feedbackController.dispose();
+    super.dispose();
+  }
+
+  void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (_rating > 0) {
-        // Form is valid and rating is provided
-        print('Name: ${_nameController.text}');
-        print('Email: ${_emailController.text}');
-        print('Feedback: ${_feedbackController.text}');
-        print('Rating: $_rating');
-        // Handle successful form submission here
+        setState(() {
+          _isLoading = true; // Indicate loading state
+        });
 
-        AlertDialog alert = AlertDialog(
-          // backgroundColor: Color.fromARGB(255, 203, 171, 146),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          title: const Text('Thanks for rating us!'),
-          // content: Text('Thanks for rating us!'),
-          actions: [
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 3, 106, 115),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MainPage()));
-                },
-                child: const Text('OK'),
-              ),
-            ),
-          ],
-        );
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
+
+        // Home
+        String url =
+            "http://192.168.0.113/doc_wizard/index.php/submit_feedback";
+        // String url = "http://192.168.20.78/doc_wizard/index.php/submit_feedback";
+
+        try {
+          DateTime now = DateTime.now();
+          String formattedDate = DateFormat('dd-MM-yy').format(now);
+
+          print("token: $token");
+          print("name: ${_nameController.text}");
+          print("'email': ${_emailController.text}");
+          print("'feedback': ${_feedbackController.text}");
+          print("'no_of_star': ${_rating.toString()}");
+          print("'date' : ${formattedDate.toString()}");
+
+          var res = await http.post(Uri.parse(url), body: {
+            'token': token,
+            'name': _nameController.text,
+            'email': _emailController.text,
+            'feedback': _feedbackController.text,
+            'no_of_star': _rating.toString(),
+            'date': formattedDate,
+          });
+
+          // 'date' : formattedDate,
+          var jsonResponse = jsonDecode(res.body);
+          print(jsonResponse);
+          setState(() {
+            _isLoading = false; // Reset loading state
+          });
+
+          if (res.statusCode == 200) {
+            _showSuccessDialog();
+          } else {
+            showCustomSnackBar(context, jsonResponse['message']);
+          }
+        } catch (e) {
+          setState(() {
+            _isLoading = false;
+          });
+          print(e);
+        }
       } else {
-        // Handle case where rating is not provided
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please provide a rating.')),
         );
       }
     }
+  }
+
+  void _showSuccessDialog() {
+    AlertDialog alert = AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      title: const Text('Thanks for rating us!'),
+      actions: [
+        Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 3, 106, 115),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8))),
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const MainPage()));
+            },
+            child: const Text('OK'),
+          ),
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
@@ -141,7 +197,7 @@ class _FeedBackState extends State<FeedBack> {
                   autocorrect: true,
                   keyboardType: TextInputType.multiline,
                   minLines: 1,
-                  maxLines: 100,
+                  maxLines: 25,
                   decoration: InputDecoration(
                       labelText: 'FeedBack Message',
                       border: OutlineInputBorder(
