@@ -43,7 +43,7 @@ class _FeedBackState extends State<FeedBack> {
         // Home
         String url =
             "http://192.168.0.113/doc_wizard/index.php/submit_feedback";
-        // String url = "http://192.168.20.78/doc_wizard/index.php/submit_feedback";
+        // String url = "http://192.168.52.78/doc_wizard/index.php/submit_feedback";
 
         try {
           DateTime now = DateTime.now();

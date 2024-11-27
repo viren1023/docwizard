@@ -21,6 +21,7 @@ class _ViewFeedbackState extends State<ViewFeedback> {
   // Future<bool>
   Future<List<dynamic>> fetchFeedbacks() async {
     String url = "http://192.168.0.113/doc_wizard/index.php/view_feedback";
+    // String url = "http://192.168.52.78/doc_wizard/index.php/view_feedback";
     final response = await http.post(Uri.parse(url));
 
     if (response.statusCode == 200) {

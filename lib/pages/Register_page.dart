@@ -49,7 +49,7 @@ class _Register extends State<Register> {
       // String ipAddress = context.read<IPAddressProvider>().ipAddress;
 
       String url = "http://192.168.0.113/doc_wizard/i/ndex.php/signup";
-      // String url = "http://192.168.20.78/doc_wizard/index.php/signup";
+      // String url = "http://192.168.52.78/doc_wizard/index.php/signup";
 
       // try {
 
@@ -66,7 +66,7 @@ class _Register extends State<Register> {
       var jRes = await jsonDecode(res.body);
 
       if (res.statusCode == 200) {
-        saveToken(jRes['token'], jRes['isAdmin']);
+        saveToken(jRes['token'], false);
         setState(() {
           _isLoading = false;
         });

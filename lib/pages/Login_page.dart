@@ -43,7 +43,7 @@ class _Login extends State<Login> {
       });
 
       String url = "http://192.168.0.113/doc_wizard/index.php/signin";
-      // String url = "http://192.168.20.78/doc_wizard/index.php/signin";
+      // String url = "http://192.168.52.78/doc_wizard/index.php/signin";
       print('before passed res');
 
       try {

@@ -31,3 +31,33 @@ Future<Widget> createThumbnail(String filePath) async {
     return Text('Failed to load PDF');
   }
 }
+
+Future<Widget> createThumbnailIcon(String filePath) async {
+  PdfDocument? _pdfDocument;
+  PdfPageImage? _pdfPageImage;
+
+  try {
+    _pdfDocument = await PdfDocument.openFile(filePath);
+    final PdfPage pdfPage = await _pdfDocument.getPage(1);
+
+    _pdfPageImage = await pdfPage.render(width: 500, height: 500
+
+        // width: 1080,
+        // height: 2340,
+        );
+    await pdfPage.close();
+
+    return Image.memory(
+      _pdfPageImage!.bytes,
+      fit: BoxFit.values[3],
+      // fit: BoxFit.values[0],
+      // fit: BoxFit.contain,
+      // fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
+      width: double.infinity,
+      height: double.infinity,
+    );
+  } catch (e) {
+    return Text('Failed to load PDF');
+  }
+}

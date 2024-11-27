@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> insert_data(BuildContext context, name, path, size, time) async {
   print("in insert_data");
   String url = "http://192.168.0.113/doc_wizard/index.php/save_record";
-  // String url = "http://192.168.20.78/doc_wizard/index.php/save_record";
+  // String url = "http://192.168.52.78/doc_wizard/index.php/save_record";
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? token = prefs.getString('token');

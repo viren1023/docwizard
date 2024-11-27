@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:doc_wizard/utils/choseFile.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:doc_wizard/providers/file_type.dart';
+import 'package:share_plus/share_plus.dart';
 // enum FileType { txt, images }
 
 class Home extends StatefulWidget {
@@ -41,6 +42,33 @@ class _Home extends State<Home> {
     }
   }
 
+  Future<bool> _showDeleteConfirmationDialog(BuildContext context) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Delete File"),
+              content: Text("Are you sure you want to delete this file?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false); // Cancel
+                  },
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true); // Confirm
+                  },
+                  child: Text("Delete"),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // If the dialog returns null, default to false.
+  }
+
   // Future<void> openPdf(final file) async {
   //   final path = file.path;
   //   final exists = await file.exists();
@@ -63,7 +91,8 @@ class _Home extends State<Home> {
   Future<void> _loadFiles() async {
     try {
       final directory = Directory('/storage/emulated/0/Download/DocWizard');
-      final List<FileSystemEntity> files = directory.listSync();
+      List<FileSystemEntity> files = directory.listSync();
+      files = files.reversed.toList();
       setState(() {
         _files = files;
         print(_files.isEmpty);
@@ -99,65 +128,155 @@ class _Home extends State<Home> {
                   padding: EdgeInsets.all(24),
                   itemBuilder: (context, index) {
                     final file = _files[index];
-                    return GestureDetector(
-                      onTap: () => openPdf(file),
-                      child: Container(
-                          // margin: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border(
-                                left: BoxPadding,
-                                right: BoxPadding,
-                                top: BoxPadding),
-                            color: Colors.white,
-                          ),
-                          child: Column(children: [
-                            Expanded(
-                              flex: 2,
-                              child: FutureBuilder(
-                                future: createThumbnail(file.path),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Container(
+                    return Container(
+                        // margin: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border(
+                              left: BoxPadding,
+                              right: BoxPadding,
+                              top: BoxPadding,
+                              bottom: BoxPadding),
+                          color: Colors.white,
+                        ),
+                        child: Column(children: [
+                          Expanded(
+                            flex: 3,
+                            child: FutureBuilder(
+                              future: createThumbnailIcon(file.path),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return GestureDetector(
+                                    onTap: () => openPdf(file),
+                                    child: Container(
                                       decoration: BoxDecoration(
-                                        border: Border(
-                                            left: BorderSide(
-                                          width: 0,
-                                        )),
+                                        //   border: Border(
+                                        //       left: BorderSide(
+                                        //     width: 0,
+                                        //   )),
                                         color: Colors.white,
                                       ),
                                       child: snapshot.data,
-                                    );
-                                  } else {
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-                                },
+                                    ),
+                                  );
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 0,
+                                    color: Color.fromARGB(255, 3, 46, 64)),
+                                color: Color.fromARGB(255, 3, 46, 64),
+                                // color: Color.fromARGB(255, 134, 160, 171),
+                              ),
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              width: double.infinity,
+                              height: double.minPositive,
+                              // color: Color.fromARGB(255, 212, 131, 105),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      file.path.split('/').last,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.white),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: PopupMenuButton<int>(
+                                      position: PopupMenuPosition.under,
+                                      color: Colors.white,
+                                      iconColor: Colors.white,
+                                      iconSize: 20,
+                                      onSelected: (value) async {
+                                        print(value);
+                                        if (value == 1) {
+                                          try {
+                                            await Share.shareXFiles(
+                                                [XFile(file.path)]);
+                                          } catch (e) {
+                                            print("Error sharing file: $e");
+                                          }
+                                        } else if (value == 0) {
+                                          openPdf(file);
+                                        } else if (value == 2) {
+                                          print("in delete");
+                                          bool confirm =
+                                              await _showDeleteConfirmationDialog(
+                                                  context);
+                                          if (confirm) {
+                                            try {
+                                              await File(file.path).delete();
+                                              setState(() {
+                                                _files.removeAt(index);
+                                              });
+                                            } catch (e) {
+                                              print("Error deleting file: $e");
+                                            }
+                                          }
+                                        }
+                                      },
+                                      itemBuilder: (BuildContext context) {
+                                        // Define the menu items for the PopupMenuButton
+                                        return <PopupMenuEntry<int>>[
+                                          PopupMenuItem<int>(
+                                            value: 0,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text("Open"),
+                                                Icon(Icons.picture_as_pdf)
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem<int>(
+                                            value: 1,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text("Share"),
+                                                Icon(Icons.share)
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem<int>(
+                                              value: 2,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text("Delete"),
+                                                  Icon(Icons.delete_forever)
+                                                ],
+                                              )),
+                                        ];
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 3, 46, 64),
-                                ),
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                width: double.infinity,
-                                height: double.minPositive,
-                                // color: Color.fromARGB(255, 212, 131, 105),
-                                child: Text(
-                                  file.path.split('/').last,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ])),
-                    );
+                          ),
+                        ]));
                   }),
       floatingActionButton: SpeedDial(
         spacing: 12,

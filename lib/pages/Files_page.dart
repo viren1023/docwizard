@@ -29,7 +29,7 @@ class _Files extends State<Files> {
   void loadData() async {
     print("helo");
     String url = "http://192.168.0.113/doc_wizard/index.php/file_history";
-    // String url = "http://192.168.20.78/doc_wizard/index.php/file_history";
+    // String url = "http://192.168.52.78/doc_wizard/index.php/file_history";
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
@@ -51,6 +51,13 @@ class _Files extends State<Files> {
         file_path = result['file_path'];
         file_date = result['time_date'];
         file_size = result['file_size'];
+
+        // reverse the list to show newest on top
+
+        file_name = file_name.reversed.toList();
+        file_path = file_path.reversed.toList();
+        file_date = file_date.reversed.toList();
+        file_size = file_size.reversed.toList();
       }
 
       isLoading = false;

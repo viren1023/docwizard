@@ -53,6 +53,7 @@ dependencies:
   provider: ^6.1.2
   http: ^1.2.2
 
+  share_plus:
   flutter_speed_dial: ^4.3.0
   intl: ^0.18.0
   flutter_archive: ^6.0.3
